@@ -41,6 +41,7 @@ class CreatePatientsTable extends Migration
             $table->string('doctor_user_id')->nullable();
             $table->integer('user_id')->nullable();
             $table->datetime('last_visit')->nullable();
+            $table->boolean('is_new')->default(1);
             $table->timestamps();
         });
     }

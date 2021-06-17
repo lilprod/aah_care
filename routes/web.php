@@ -37,6 +37,16 @@ Route::get('/video-chat', function () {
     return view('video_chat.index', ['users' => $users]);
 })->name('video_chat')->middleware('auth');
 
+Route::get('/video-chat/{id}', function () {
+
+    // fetch all users apart from the authenticated user
+
+    $users = User::where('id', request()->id)
+                  ->get();
+
+    return view('video_chat.index', ['users' => $users]);
+})->name('video_call')->middleware('auth');
+
 // Endpoints to call or receive calls.
 
 Route::post('/video/call-user', 'VideoChatController@callUser');
@@ -49,6 +59,8 @@ Route::post('/video/accept-call', 'VideoChatController@acceptCall');
 
   Route::post('auth/video_chat', 'VideoChatController@auth');
 });*/
+
+Route::get('/getCities', 'AutoCompleteController@search')->name('getCities');
 
 //Notifications
 Route::resource('alerts', 'AlertController');

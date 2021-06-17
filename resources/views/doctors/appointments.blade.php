@@ -124,8 +124,12 @@
 									@endif
 
 									@if($appointment->status == 3)
-									<a href="{{route('appointment.start', $appointment->id)}}" class="btn btn-sm bg-primary-light">
+									<a href="{{route('appointment.start', $appointment->id)}}" class="btn btn-sm bg-primary-light" target="_blank">
 										<i class="fas fa-play"></i> Start
+									</a>
+
+									<a href="{{route('video_call', $appointment->patient_user_id)}}" class="btn btn-white btn-sm call-btn" target="_blank">
+										<i class="fas fa-video"></i> Video
 									</a>
 									@endif
 

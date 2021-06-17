@@ -15,10 +15,15 @@ class CreateDoctorClassesTable extends Migration
     {
         Schema::create('doctor_classes', function (Blueprint $table) {
             $table->id();
-            $table->integer('doctor_id');
-            $table->integer('doctor_user_id');
-            $table->integer('country');
-            $table->integer('doctor_id');
+            $table->integer('doctor_id')->nullable();
+            $table->integer('doctor_user_id')->nullable();
+            $table->string('country')->nullable();
+            $table->integer('country_id')->nullable();
+            $table->integer('region_id')->nullable();
+            $table->string('region')->nullable();
+            $table->integer('city_id')->nullable();
+            $table->string('city')->nullable();
+            $table->integer('views_count')->unsigned()->default(0);
             $table->timestamps();
         });
     }

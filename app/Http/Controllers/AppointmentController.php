@@ -6,6 +6,7 @@ use App\Appointment;
 use App\AppointmentFee;
 use App\Speciality;
 use App\Doctor;
+use App\DoctorClass;
 use App\History;
 use App\Notification;
 use App\Patient;
@@ -231,6 +232,42 @@ class AppointmentController extends Controller
         $appointment->paymentmode_id = $request->payment_mode;
 
         $appointment->status = 0;
+
+        $check = DoctorClass::where('doctor_id', $request->input('doctor_id'))
+                                ->where('city', '=', $patient->city)
+                                ->first();
+
+        if($check != null){
+
+            $check->views_count = $check->views_count + 1;
+
+            $check->save();
+
+        }else{
+
+            $new = new DoctorClass();
+
+            $new->doctor_id = $request->input('doctor_id');
+
+            $new->doctor_user_id = $doctor->user_id;
+
+            $new->region = $patient->region;
+
+            //$new->region_id =;
+
+            $new->country = $patient->country;
+
+            //$new->country_id =;
+
+            $new->city = $patient->city;
+
+            //$new->city_id =;
+
+            $new->views_count = $new->views_count+1;
+
+            $new->save();
+
+        }
 
         $historique = new History();
         $historique->action = 'Create';

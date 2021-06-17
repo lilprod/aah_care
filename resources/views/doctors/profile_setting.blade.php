@@ -306,11 +306,19 @@
 											</div>
 										</div>-->
 
-										<div class="col-md-6">
+										{{-- <div class="col-md-6">
 											<div class="form-group">
 												<label class="control-label">City</label>
 												<input type="text" class="form-control" name="city" value="{{$doctor->city}}">
 											</div>
+										</div> --}}
+
+										<div class="col-12 col-sm-6">
+											<div class="form-group">
+												<label>City <span class="text-danger">*</span></label>
+												<input type="text" id="city" name="city" class="form-control" placeholder="City" value="{{$doctor->city}}" required>
+												<div id="city_list"></div> 
+											</div>  
 										</div>
 
 										<!--<div class="col-md-6">
@@ -714,121 +722,159 @@
 	      });
 	    </script>-->
 
-	    <script type="text/javascript">
-            $(document).ready(function() {
+<script type="text/javascript">
+	$(document).ready(function() {
 
-                $('#name').keyup(function(){
-                    $(this).val($(this).val().toUpperCase());
-                });
+		$('#name').keyup(function(){
+			$(this).val($(this).val().toUpperCase());
+		});
 
-                $('#firstname').keyup(function() 
-                {
-                    var str = $('#firstname').val();
-                   
-                    
-                    var spart = str.split(" ");
-                    for ( var i = 0; i < spart.length; i++ )
-                    {
-                        var j = spart[i].charAt(0).toUpperCase();
-                        spart[i] = j + spart[i].substr(1);
-                    }
-
-                  $('#firstname').val(spart.join(" "));
-                
-                });
-
-                 $('#region').on('change', function () {
-
-                    var region_id = $(this).val();
-
-                    if(region_id){
-                        $.ajax({
-                            url: '{!!URL::route('getCountries')!!}',
-                            type: 'GET',
-                            data : { 'id' : region_id},
-                            dataType: 'json',
-
-                            success:function(data){
-                                //console.log('data');
-
-                                if(data) {
-
-                                	$('#country_section').attr("style", "display:block");
-
-                                	$('#old_country').attr("style", "display:none");
-
-                                    $('#country').empty();
-
-                                    $('#country').focus;
-
-                                    $('#country').append('<option value = "">--Select Country--</option>');
-
-                                    $.each(data, function(key, value){
-                                        $('select[name = "country"]').append('<option value= "'+ value.title +'">' + value.title + '</option>');
-                                    });
-
-                                    //$('select[name = "country"]').selectmenu('refresh', true);
-
-                                    //$('select[name = "country"]').refresh();
-
-                                    } else {
-                                        $('#country').empty();
-                                    } 
-                                }
-                                });
-                            }
-                            else{
-                                $('#country').empty();
-                            }
-                        
-                 });
-            });
-            </script>
-
-	    <script type="text/javascript">
-			// When the user scrolls down 20px from the top of the document, show the button
-			window.onscroll = function() {scrollFunction()};
-
-			function scrollFunction() {
-			  if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-			    document.getElementById("myBtn").style.display = "block";
-			  } else {
-			    document.getElementById("myBtn").style.display = "none";
-			  }
+		$('#firstname').keyup(function() 
+		{
+			var str = $('#firstname').val();
+			
+			
+			var spart = str.split(" ");
+			for ( var i = 0; i < spart.length; i++ )
+			{
+				var j = spart[i].charAt(0).toUpperCase();
+				spart[i] = j + spart[i].substr(1);
 			}
 
-			// When the user clicks on the button, scroll to the top of the document
-			function topFunction() {
-			  document.body.scrollTop = 0; // For Safari
-			  document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+			$('#firstname').val(spart.join(" "));
+		
+		});
+
+			$('#region').on('change', function () {
+
+			var region_id = $(this).val();
+
+			if(region_id){
+				$.ajax({
+					url: '{!!URL::route('getCountries')!!}',
+					type: 'GET',
+					data : { 'id' : region_id},
+					dataType: 'json',
+
+					success:function(data){
+						//console.log('data');
+
+						if(data) {
+
+							$('#country_section').attr("style", "display:block");
+
+							$('#old_country').attr("style", "display:none");
+
+							$('#country').empty();
+
+							$('#country').focus;
+
+							$('#country').append('<option value = "">--Select Country--</option>');
+
+							$.each(data, function(key, value){
+								$('select[name = "country"]').append('<option value= "'+ value.title +'">' + value.title + '</option>');
+							});
+
+							//$('select[name = "country"]').selectmenu('refresh', true);
+
+							//$('select[name = "country"]').refresh();
+
+							} else {
+								$('#country').empty();
+							} 
+						}
+						});
+					}
+					else{
+						$('#country').empty();
+					}
+				
+			});
+
+			$('#city').on('keyup',function() {
+			// the text typed in the input field is assigned to a variable 
+			var query = $(this).val();
+			// call to an ajax function
+			if(query ==''){
+
+				$('#city_list').html("");
+				$('#city').val("");
+			}else{
+
+				$.ajax({
+				// assign a controller function to perform search action - route name is search
+				url:"{{ route('getCities') }}",
+				// since we are getting data methos is assigned as GET
+				type:"GET",
+				// data are sent the server
+				data:{'ville':query},
+				// if search is succcessfully done, this callback function is called
+				success:function (data) {
+					// print the search results in the div called country_list(id)
+					$('#city_list').html(data);
+				}
+				})
+				// end of ajax call
 			}
-		</script>
+		});
 
-		<!-- Chosen JS -->
 
-        
-        <!-- Bootstrap Core JS -->
-        <script src="{{asset('assets/js/popper.min.js') }}"></script>
-        <script src="{{asset('assets/js/bootstrap.min.js') }}"></script>
-        
-        <!-- Sticky Sidebar JS -->
-        <script src="{{asset('assets/plugins/theia-sticky-sidebar/ResizeSensor.js') }}"></script>
-        <script src="{{asset('assets/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js') }}"></script>
+		// initiate a click function on each search result
+		$(document).on('click', 'li', function(){
+			// declare the value in the input field to a variable
+			var value = $(this).text();
+			// assign the value to the search box
+			$('#city').val($(this).attr('data-id'))
+			// after click is done, search results segment is made empty
+			$('#city_list').html("");
+		});
+    });
+</script>
 
-        <!-- Select2 JS -->
-		<script src="{{asset('assets/plugins/select2/js/select2.min.js') }}"></script>
-		
-		<!-- Dropzone JS -->
-		<script src="{{asset('assets/plugins/dropzone/dropzone.min.js') }}"></script>
-		
-		<!-- Bootstrap Tagsinput JS -->
-		<script src="{{asset('assets/plugins/bootstrap-tagsinput/js/bootstrap-tagsinput.js') }}"></script>
-		
-		<!-- Profile Settings JS -->
-		<script src="{{asset('assets/js/profile-settings.js') }}"></script>
+	<script type="text/javascript">
+		// When the user scrolls down 20px from the top of the document, show the button
+		window.onscroll = function() {scrollFunction()};
 
-        <!-- Custom JS -->
-        <script src="{{asset('assets/js/script.js') }}"></script>
+		function scrollFunction() {
+			if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+			document.getElementById("myBtn").style.display = "block";
+			} else {
+			document.getElementById("myBtn").style.display = "none";
+			}
+		}
+
+		// When the user clicks on the button, scroll to the top of the document
+		function topFunction() {
+			document.body.scrollTop = 0; // For Safari
+			document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+		}
+	</script>
+
+	<!-- Chosen JS -->
+
+
+	<!-- Bootstrap Core JS -->
+	<script src="{{asset('assets/js/popper.min.js') }}"></script>
+	<script src="{{asset('assets/js/bootstrap.min.js') }}"></script>
+
+	<!-- Sticky Sidebar JS -->
+	<script src="{{asset('assets/plugins/theia-sticky-sidebar/ResizeSensor.js') }}"></script>
+	<script src="{{asset('assets/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js') }}"></script>
+
+	<!-- Select2 JS -->
+	<script src="{{asset('assets/plugins/select2/js/select2.min.js') }}"></script>
+
+	<!-- Dropzone JS -->
+	<script src="{{asset('assets/plugins/dropzone/dropzone.min.js') }}"></script>
+
+	<!-- Bootstrap Tagsinput JS -->
+	<script src="{{asset('assets/plugins/bootstrap-tagsinput/js/bootstrap-tagsinput.js') }}"></script>
+
+	<!-- Profile Settings JS -->
+	<script src="{{asset('assets/js/profile-settings.js') }}"></script>
+
+	<!-- Custom JS -->
+	<script src="{{asset('assets/js/script.js') }}"></script>
         
     </body>
 </html>

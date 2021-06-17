@@ -231,7 +231,7 @@ export default {
       this.videoCallParams.peer1.on("signal", (data) => {
         // send user call signal
         axios
-          .post("/telemed_aah/public/video/call-user", {
+          .post("/aah_care/public/video/call-user", {
             user_to_call: id,
             signal_data: data,
             from: this.authuserid,
@@ -293,7 +293,7 @@ export default {
       this.videoCallParams.receivingCall = false;
       this.videoCallParams.peer2.on("signal", (data) => {
         axios
-          .post("/telemed_aah/public/video/accept-call", {
+          .post("/aah_care/public/video/accept-call", {
             signal: data,
             to: this.videoCallParams.caller,
           })

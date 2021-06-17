@@ -29,7 +29,7 @@ class DoctorController extends BaseController
      */
     public function allDoctors()
     {
-        $doctors = Doctor::where('status', 1)
+        $doctors = Doctor::active()->matricule()
                         ->where('speciality_id','<>', '')
         				->get();
 
@@ -73,9 +73,7 @@ class DoctorController extends BaseController
     {
         $params = $request->except('_token');
 
-        //$doctors = Doctor::filter($params)->get();
-
-        $doctors = Doctor::filter($params)->orderByDesc('id')->paginate(10);;
+        $doctors = Doctor::active()->matricule()->filter($params)->orderByDesc('id')->paginate(10);;
 
         if (count($doctors) > 0){
 

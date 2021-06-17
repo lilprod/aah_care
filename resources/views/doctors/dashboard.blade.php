@@ -191,6 +191,10 @@
 																				<a href="{{route('appointment.start', $appointment->id)}}" class="btn btn-sm bg-primary-light">
 																					<i class="fas fa-play"></i> Start
 																				</a>
+
+																				<a href="{{route('video_call', $appointment->patient_user_id)}}" class="btn btn-white btn-sm call-btn" target="_blank">
+																					<i class="fas fa-video"></i> Video
+																				</a>
 																				@endif
 
 																				@if($appointment->status == 3)
@@ -262,6 +266,10 @@
 																				@if($appointment->status == 3)
 																				<a href="javascript:void(0);" class="btn btn-sm bg-danger-light" data-toggle="modal" data-target="#finish_appointment" onclick="finishData({{ $appointment->id}})">
 																					<i class="fas fa-flag-checkered"></i> Finish
+																				</a>
+
+																				<a href="{{route('video_call', $appointment->patient_user_id)}}" class="btn btn-white btn-sm call-btn" target="_blank">
+																					<i class="fas fa-video"></i> Video
 																				</a>
 																				@endif
 																			</div>

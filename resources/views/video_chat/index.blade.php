@@ -8,10 +8,7 @@
 
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-		<title>Telemed AAH - Video Chat</title>
-
-		<!-- Scripts -->
- 		<script src="{{ asset('js/app.js') }}" defer></script>
+		<title>AAH+ - Video Chat</title>
 		
 		<!-- Favicons -->
 		<link type="image/x-icon" href="assets/img/favicon.png" rel="icon">
@@ -50,7 +47,7 @@
 									<li class="breadcrumb-item active" aria-current="page">Video Chat</li>
 								</ol>
 							</nav>
-							<h2 class="breadcrumb-title">Video Chat</h2>
+							<h2 class="breadcrumb-title">Video Chat <span style="color: #26a9e166">+</span></h2>
 						</div>
 					</div>
 				</div>
@@ -161,6 +158,9 @@
 	  
 		<!-- jQuery -->
 		<script src="{{asset('assets/js/jquery.min.js') }}"></script>
+
+		<!-- Scripts -->
+		<script src="{{ asset('js/app.js') }}" defer></script>
 		
 		<!-- Bootstrap Core JS -->
 		<script src="{{asset('assets/js/popper.min.js') }}"></script>

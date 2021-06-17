@@ -16,6 +16,25 @@ class Doctor extends Model
         'name', 'fistname','email','phone_number','username', 'address', 'profile_picture','gender', 'speciality_id',
     ];
 
+    public function scopeActive($query)
+    {
+        return $query->where('status', '=', 1); 
+    }
+
+    public function scopeMatricule($query)
+    {
+        return $query->where('matricule', '!=', ''); 
+    }
+
+    public function scopeSpeciality($query)
+    {
+        return $query->where('speciality_id', '!=', ''); 
+    }
+
+    //Then call the scopes as given below
+ 
+    //$users = User::active()->get();
+
     public function scopeFilter($query, $params)
     {
 
@@ -48,6 +67,11 @@ class Doctor extends Model
     public function signature()
     {
         return $this->hasOne('App\Signature');
+    }
+
+    public function populary()
+    {
+        return $this->hasOne('App\DoctorClass');
     }
 
     public function speciality()

@@ -2583,7 +2583,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
                 _this4.videoCallParams.peer1.on("signal", function (data) {
                   // send user call signal
-                  axios.post("/telemed_aah/public/video/call-user", {
+                  axios.post("/aah_care/public/video/call-user", {
                     user_to_call: id,
                     signal_data: data,
                     from: _this4.authuserid
@@ -2669,7 +2669,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 _this5.videoCallParams.receivingCall = false;
 
                 _this5.videoCallParams.peer2.on("signal", function (data) {
-                  axios.post("/telemed_aah/public/video/accept-call", {
+                  axios.post("/aah_care/public/video/accept-call", {
                     signal: data,
                     to: _this5.videoCallParams.caller
                   }).then(function () {})["catch"](function (error) {
@@ -68632,7 +68632,7 @@ window.Pusher = __webpack_require__(/*! pusher-js */ "./node_modules/pusher-js/d
 });*/
 
 window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
-  authEndpoint: 'https://aah.care/telemed_aah/public/broadcasting/auth',
+  //authEndpoint : 'https://aah.care/telemed_aah/public/broadcasting/auth',
   broadcaster: 'pusher',
   key: "0d50a6a8ccff6264ac3e",
   cluster: "mt1",
@@ -69152,8 +69152,8 @@ var getPermissions = function getPermissions() {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\wamp64\www\telemed_aah\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\wamp64\www\telemed_aah\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\wamp64\www\aah_care\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\wamp64\www\aah_care\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ }),

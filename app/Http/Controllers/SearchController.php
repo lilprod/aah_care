@@ -51,7 +51,7 @@ class SearchController extends Controller
 
         //$doctors = Doctor::filter($params)->get();
 
-        $doctors = Doctor::filter($params)->orderByDesc('id')->paginate(10,['*'],'page');
+        $doctors = Doctor::active()->matricule()->filter($params)->orderByDesc('id')->paginate(10,['*'],'page');
 
         $nb = count($doctors);
 

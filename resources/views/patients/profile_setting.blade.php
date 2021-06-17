@@ -248,12 +248,12 @@
                                                 </div>
                                             </div>
 
-										
-											<div class="col-12 col-md-6">
+											<div class="col-12 col-sm-6">
 												<div class="form-group">
-													<label>City<span class="text-danger">*</span></label>
-													<input type="text" class="form-control" name="city" value="{{$patient->city}}">
-												</div>
+													<label>City <span class="text-danger">*</span></label>
+													<input type="text" id="city" name="city" class="form-control" placeholder="City" value="{{$patient->city}}" required>
+													<div id="city_list"></div> 
+												</div>  
 											</div>
 
 											<div class="col-12 col-md-6">
@@ -350,212 +350,250 @@
 	      	</div>
 	    </div>
       
-        <!-- jQuery -->
-        <script src="{{asset('assets/js/jquery.min.js') }}"></script>
+<!-- jQuery -->
+<script src="{{asset('assets/js/jquery.min.js') }}"></script>
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.6/cropper.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.6/cropper.js"></script>
 
-        <script>
-			var $modal = $('#modal');
-			
-			var image = document.getElementById('image');
+<script>
+	var $modal = $('#modal');
+	
+	var image = document.getElementById('image');
 
-			var cropper;
+	var cropper;
 
-			$("body").on("change", ".upload", function(e){
-			var files = e.target.files;
-			var done = function (url) {
-				image.src = url;
-				$modal.modal('show');
-			};
+	$("body").on("change", ".upload", function(e){
+	var files = e.target.files;
+	var done = function (url) {
+		image.src = url;
+		$modal.modal('show');
+	};
 
-			var reader;
-			var file;
-			var url;
+	var reader;
+	var file;
+	var url;
 
-				if (files && files.length > 0) {
-					file = files[0];
-					if (URL) {
-						done(URL.createObjectURL(file));
-					} else if (FileReader) {
-						reader = new FileReader();
-						reader.onload = function (e) {
-							done(reader.result);
-						};
-						reader.readAsDataURL(file);
+		if (files && files.length > 0) {
+			file = files[0];
+			if (URL) {
+				done(URL.createObjectURL(file));
+			} else if (FileReader) {
+				reader = new FileReader();
+				reader.onload = function (e) {
+					done(reader.result);
+				};
+				reader.readAsDataURL(file);
+			}
+		}
+	});
+
+	$modal.on('shown.bs.modal', function () {
+		cropper = new Cropper(image, {
+			aspectRatio: 1,
+			viewMode: 3,
+			preview: '.preview'
+		});
+	}).on('hidden.bs.modal', function () {
+		cropper.destroy();
+		cropper = null;
+	});
+
+	$("#crop").click(function(){
+		canvas = cropper.getCroppedCanvas({
+		width: 160,
+		height: 160,
+		});
+
+
+		canvas.toBlob(function(blob) {
+			url = URL.createObjectURL(blob);
+			var reader = new FileReader();
+				reader.readAsDataURL(blob); 
+				reader.onloadend = function() {
+				var base64data = reader.result; 
+
+				console.log(base64data);
+
+				$.ajax({
+					type: 'POST',
+					dataType: 'json',
+					url: '{!!URL::route('patient_crop_image')!!}',
+					data: {'_token': $('meta[name="csrf-token"]').attr('content'), 'image': base64data, 'patient_id' : $('#patient_id').attr('value')},
+					success: function(data){
+						//console.log(data);
+						$modal.modal('hide');
+						//alert("Crop image successfully uploaded");
+						
+						$('#message').html('<div class="alert alert-success alert-dismissible fade show" role="alert"> <span><b>Crop image successfully uploaded</b> </span><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button></div>'); // Diplay message
+
+						$('input[id=image1]').val('');
+
+						location.reload();
+
+
 					}
+					});
 				}
-			});
+		});
+	})
+</script>
+<!--<script>
+	function readURL(input) {
+		if (input.files && input.files[0]) {
+			var reader = new FileReader();
+			reader.onload = function(e) {
+				$('#blah').attr('src', e.target.result)
+			}
+		reader.readAsDataURL(input.files[0]);
+		}
+	}
 
-			$modal.on('shown.bs.modal', function () {
-			    cropper = new Cropper(image, {
-			      aspectRatio: 1,
-			      viewMode: 3,
-			      preview: '.preview'
-			    });
-			}).on('hidden.bs.modal', function () {
-			  cropper.destroy();
-			   cropper = null;
-			});
+	$('#imgInp').change(function(){
+		readURL(this)
+	});
+</script>-->
 
-			$("#crop").click(function(){
-				canvas = cropper.getCroppedCanvas({
-				width: 160,
-				height: 160,
-				});
+<script type="text/javascript">
+	$(document).ready(function() {
 
+		$('#name').keyup(function(){
+			$(this).val($(this).val().toUpperCase());
+		});
 
-			    canvas.toBlob(function(blob) {
-			        url = URL.createObjectURL(blob);
-			        var reader = new FileReader();
-			         reader.readAsDataURL(blob); 
-			         reader.onloadend = function() {
-			            var base64data = reader.result; 
-
-			            console.log(base64data);
-
-			            $.ajax({
-			                type: 'POST',
-			                dataType: 'json',
-			                url: '{!!URL::route('patient_crop_image')!!}',
-			                data: {'_token': $('meta[name="csrf-token"]').attr('content'), 'image': base64data, 'patient_id' : $('#patient_id').attr('value')},
-			                success: function(data){
-			                    //console.log(data);
-			                    $modal.modal('hide');
-			                    //alert("Crop image successfully uploaded");
-			                    
-			                    $('#message').html('<div class="alert alert-success alert-dismissible fade show" role="alert"> <span><b>Crop image successfully uploaded</b> </span><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button></div>'); // Diplay message
-
-			                    $('input[id=image1]').val('');
-
-			                    location.reload();
-
-
-			                }
-			              });
-			         }
-			    });
-			})
-		</script>
-        <!--<script>
-	      function readURL(input) {
-	            if (input.files && input.files[0]) {
-	                var reader = new FileReader();
-	                reader.onload = function(e) {
-	                    $('#blah').attr('src', e.target.result)
-	                }
-	            reader.readAsDataURL(input.files[0]);
-	            }
-	        }
-
-	      $('#imgInp').change(function(){
-	          readURL(this)
-	      });
-	    </script>-->
-
-	    <script type="text/javascript">
-            $(document).ready(function() {
-
-                $('#name').keyup(function(){
-                    $(this).val($(this).val().toUpperCase());
-                });
-
-                $('#firstname').keyup(function() 
-                {
-                    var str = $('#firstname').val();
-                   
-                    
-                    var spart = str.split(" ");
-                    for ( var i = 0; i < spart.length; i++ )
-                    {
-                        var j = spart[i].charAt(0).toUpperCase();
-                        spart[i] = j + spart[i].substr(1);
-                    }
-
-                  $('#firstname').val(spart.join(" "));
-                
-                });
-
-
-                 $('#region').on('change', function () {
-
-                    var region_id = $(this).val();
-
-                    if(region_id){
-                        $.ajax({
-                            url: '{!!URL::route('getCountries')!!}',
-                            type: 'GET',
-                            data : { 'id' : region_id},
-                            dataType: 'json',
-
-                            success:function(data){
-                                //console.log('data');
-
-                                if(data) {
-
-                                	$('#country_section').attr("style", "display:block");
-
-                                	$('#old_country').attr("style", "display:none");
-
-                                    $('#country').empty();
-
-                                    $('#country').focus;
-
-                                    $('#country').append('<option value = "">--Select Country--</option>');
-
-                                    $.each(data, function(key, value){
-                                        $('select[name = "country"]').append('<option value= "'+ value.title +'">' + value.title + '</option>');
-                                    });
-
-                                    //$('select[name = "country"]').selectmenu('refresh', true);
-
-                                    //$('select[name = "country"]').refresh();
-
-                                    } else {
-                                        $('#country').empty();
-                                    } 
-                                }
-                                });
-                            }
-                            else{
-                                $('#country').empty();
-                            }
-                        
-                 });
-            });
-        </script>
-
-        @include('inc.scripts')
-
-
-	    <script type="text/javascript">
-			// When the user scrolls down 20px from the top of the document, show the button
-			window.onscroll = function() {scrollFunction()};
-
-			function scrollFunction() {
-			  if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-			    document.getElementById("myBtn").style.display = "block";
-			  } else {
-			    document.getElementById("myBtn").style.display = "none";
-			  }
+		$('#firstname').keyup(function() 
+		{
+			var str = $('#firstname').val();
+			
+			
+			var spart = str.split(" ");
+			for ( var i = 0; i < spart.length; i++ )
+			{
+				var j = spart[i].charAt(0).toUpperCase();
+				spart[i] = j + spart[i].substr(1);
 			}
 
-			// When the user clicks on the button, scroll to the top of the document
-			function topFunction() {
-			  document.body.scrollTop = 0; // For Safari
-			  document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+			$('#firstname').val(spart.join(" "));
+		
+		});
+
+
+			$('#region').on('change', function () {
+
+			var region_id = $(this).val();
+
+			if(region_id){
+				$.ajax({
+					url: '{!!URL::route('getCountries')!!}',
+					type: 'GET',
+					data : { 'id' : region_id},
+					dataType: 'json',
+
+					success:function(data){
+						//console.log('data');
+
+						if(data) {
+
+							$('#country_section').attr("style", "display:block");
+
+							$('#old_country').attr("style", "display:none");
+
+							$('#country').empty();
+
+							$('#country').focus;
+
+							$('#country').append('<option value = "">--Select Country--</option>');
+
+							$.each(data, function(key, value){
+								$('select[name = "country"]').append('<option value= "'+ value.title +'">' + value.title + '</option>');
+							});
+
+							//$('select[name = "country"]').selectmenu('refresh', true);
+
+							//$('select[name = "country"]').refresh();
+
+							} else {
+								$('#country').empty();
+							} 
+						}
+						});
+					}
+					else{
+						$('#country').empty();
+					}
+				
+			});
+
+			$('#city').on('keyup',function() {
+			// the text typed in the input field is assigned to a variable 
+			var query = $(this).val();
+			// call to an ajax function
+			if(query ==''){
+
+				$('#city_list').html("");
+				$('#city').val("");
+			}else{
+
+				$.ajax({
+				// assign a controller function to perform search action - route name is search
+				url:"{{ route('getCities') }}",
+				// since we are getting data methos is assigned as GET
+				type:"GET",
+				// data are sent the server
+				data:{'ville':query},
+				// if search is succcessfully done, this callback function is called
+				success:function (data) {
+					// print the search results in the div called country_list(id)
+					$('#city_list').html(data);
+				}
+				})
+				// end of ajax call
 			}
-		</script>
-        <!-- Bootstrap Core JS -->
-        <script src="{{asset('assets/js/popper.min.js') }}"></script>
-        <script src="{{asset('assets/js/bootstrap.min.js') }}"></script>
-        
-        <!-- Sticky Sidebar JS -->
-        <script src="{{asset('assets/plugins/theia-sticky-sidebar/ResizeSensor.js') }}"></script>
-        <script src="{{asset('assets/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js') }}"></script>
-        
-        <!-- Custom JS -->
-        <script src="{{asset('assets/js/script.js') }}"></script>
+		});
+
+
+		// initiate a click function on each search result
+		$(document).on('click', 'li', function(){
+			// declare the value in the input field to a variable
+			var value = $(this).text();
+			// assign the value to the search box
+			$('#city').val($(this).attr('data-id'))
+			// after click is done, search results segment is made empty
+			$('#city_list').html("");
+		});
+	});
+</script>
+
+@include('inc.scripts')
+
+
+<script type="text/javascript">
+	// When the user scrolls down 20px from the top of the document, show the button
+	window.onscroll = function() {scrollFunction()};
+
+	function scrollFunction() {
+		if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+		document.getElementById("myBtn").style.display = "block";
+		} else {
+		document.getElementById("myBtn").style.display = "none";
+		}
+	}
+
+	// When the user clicks on the button, scroll to the top of the document
+	function topFunction() {
+		document.body.scrollTop = 0; // For Safari
+		document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+	}
+</script>
+<!-- Bootstrap Core JS -->
+<script src="{{asset('assets/js/popper.min.js') }}"></script>
+<script src="{{asset('assets/js/bootstrap.min.js') }}"></script>
+
+<!-- Sticky Sidebar JS -->
+<script src="{{asset('assets/plugins/theia-sticky-sidebar/ResizeSensor.js') }}"></script>
+<script src="{{asset('assets/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js') }}"></script>
+
+<!-- Custom JS -->
+<script src="{{asset('assets/js/script.js') }}"></script>
         
     </body>
 </html>

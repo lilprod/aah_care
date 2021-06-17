@@ -13,6 +13,11 @@ class Patient extends Model
         return $this->belongsToMany(Doctor::class, 'doctor_patient', 'patient_id','doctor_id' , 'status')->withTimeStamps();
     }
 
+    public function scopeActive($query)
+    {
+        return $query->where('status', '=', 1); 
+    }
+
     public function appointments(){
 
         return $this->hasMany(Appointment::class);

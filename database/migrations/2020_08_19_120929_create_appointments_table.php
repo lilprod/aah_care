@@ -25,6 +25,7 @@ class CreateAppointmentsTable extends Migration
             $table->integer('doctor_id');
             $table->integer('doctor_user_id');
             $table->integer('patient_user_id');
+            $table->string('purpose')->nullable();
             $table->mediumText('note')->nullable();
             $table->date('confirm_date')->nullable();
             $table->string('identifier')->nullable();
